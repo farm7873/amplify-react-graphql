@@ -26,23 +26,27 @@ export default function NoteCreateForm(props) {
     name: "",
     description: "",
     image: "",
+    user: "",
   };
   const [name, setName] = React.useState(initialValues.name);
   const [description, setDescription] = React.useState(
     initialValues.description
   );
   const [image, setImage] = React.useState(initialValues.image);
+  const [user, setUser] = React.useState(initialValues.user);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setName(initialValues.name);
     setDescription(initialValues.description);
     setImage(initialValues.image);
+    setUser(initialValues.user);
     setErrors({});
   };
   const validations = {
     name: [{ type: "Required" }],
     description: [],
     image: [],
+    user: [{ type: "Required" }],
   };
   const runValidationTasks = async (
     fieldName,
@@ -73,6 +77,7 @@ export default function NoteCreateForm(props) {
           name,
           description,
           image,
+          user,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -138,6 +143,7 @@ export default function NoteCreateForm(props) {
               name: value,
               description,
               image,
+              user,
             };
             const result = onChange(modelFields);
             value = result?.name ?? value;
@@ -164,6 +170,7 @@ export default function NoteCreateForm(props) {
               name,
               description: value,
               image,
+              user,
             };
             const result = onChange(modelFields);
             value = result?.description ?? value;
@@ -190,6 +197,7 @@ export default function NoteCreateForm(props) {
               name,
               description,
               image: value,
+              user,
             };
             const result = onChange(modelFields);
             value = result?.image ?? value;
@@ -203,6 +211,33 @@ export default function NoteCreateForm(props) {
         errorMessage={errors.image?.errorMessage}
         hasError={errors.image?.hasError}
         {...getOverrideProps(overrides, "image")}
+      ></TextField>
+      <TextField
+        label="User"
+        isRequired={true}
+        isReadOnly={false}
+        value={user}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              name,
+              description,
+              image,
+              user: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.user ?? value;
+          }
+          if (errors.user?.hasError) {
+            runValidationTasks("user", value);
+          }
+          setUser(value);
+        }}
+        onBlur={() => runValidationTasks("user", user)}
+        errorMessage={errors.user?.errorMessage}
+        hasError={errors.user?.hasError}
+        {...getOverrideProps(overrides, "user")}
       ></TextField>
       <Flex
         justifyContent="space-between"
