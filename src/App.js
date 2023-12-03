@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
 import { generateClient } from "aws-amplify/api";
+import { getCurrentUser } from "@aws-amplify/auth";
 //import { uploadData , downloadData , getUrl } from 'aws-amplify/storage';
 import {
   Button,
@@ -50,6 +51,7 @@ const App = ({ signOut }) => {
       name: form.get("name"),
       description: form.get("description"),
       image: image.name,
+      user: getCurrentUser,
     };
     if (!!data.image) await Storage.put(data.name ,  image );
     await API.graphql({
